@@ -31,7 +31,7 @@ const CourseSchema = new Schema<TCourse>({
     type: String,
     unique: true,
     trim: true,
-    required: [true, "Title is required and unique too"],
+    required: [true, "Title is required and unique` too"],
   },
   instructor: {
     type: String,
