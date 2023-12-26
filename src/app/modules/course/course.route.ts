@@ -13,6 +13,7 @@ router.post(
 router.get("/courses", CourseController.getAllCourses);
 router.delete("/:id", CourseController.deleteCourse);
 router.get("/course/:id", CourseController.getSingleCourse);
+router.get("/courses/:id/reviews", CourseController.getSingleCourseReview);
 // router.patch("/:studentId", CourseController.);
 
 export const CourseRoutes = router;

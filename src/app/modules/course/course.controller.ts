@@ -37,6 +37,17 @@ const getSingleCourse = catchAsync(async (req, res) => {
   });
 });
 
+const getSingleCourseReview = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const getCourse = await CourseServices.getSingleCourseReviewFromDB(id);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Course is retrieve  successfully with review",
+    data: getCourse,
+  });
+});
+
 const deleteCourse = catchAsync(async (req, res) => {
   const { id } = req.params;
   const deletedCourse = await CourseServices.deleteCourseFromDB(id);
@@ -52,5 +63,6 @@ export const CourseController = {
   createCourse,
   getAllCourses,
   getSingleCourse,
+  getSingleCourseReview,
   deleteCourse,
 };

@@ -1,3 +1,4 @@
+import { Review } from "../review/review.model";
 import TCourse from "./course.interface";
 import { Course } from "./course.model";
 
@@ -28,6 +29,17 @@ const deleteCourseFromDB = (id: string) => {
     }
   );
   return result;
+};
+
+const getSingleCourseReviewFromDB = async (id: string) => {
+  const singleCourse = await Course.findById(id);
+  const findReview = await Review.find({ courseId: id });
+  console.log({ findReview }, "findReview");
+  console.log({ singleCourse });
+  return {
+    course: singleCourse,
+    reviews: [findReview],
+  };
 };
 
 /* 
@@ -189,5 +201,6 @@ export const CourseServices = {
   createCourseIntoDB,
   getSingleCourseFromDB,
   getAllCoursesFromDB,
+  getSingleCourseReviewFromDB,
   deleteCourseFromDB,
 };

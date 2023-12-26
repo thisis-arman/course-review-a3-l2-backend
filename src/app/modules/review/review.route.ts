@@ -11,9 +11,9 @@ router.post(
   validateRequest(reviewValidations.createReviewValidationSchema),
   ReviewController.createReview
 );
-router.get("/courses", ReviewController.getAllReviews);
-router.delete("/:id", ReviewController.deleteReview);
-router.get("/id", ReviewController.getSingleReview);
+router.get("/reviews", ReviewController.getAllReviews);
+router.delete("/reviews/:id", ReviewController.deleteReview);
+router.get("/reviews/:id", ReviewController.getSingleReview);
 // router.patch("/:studentId", ReviewController.);
 
 export const ReviewRoutes = router;

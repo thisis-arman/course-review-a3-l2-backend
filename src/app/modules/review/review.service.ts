@@ -12,7 +12,7 @@ const getAllReviewsFromDB = () => {
 };
 
 const getSingleReviewFromDB = (id: string) => {
-  const result = Review.findById(id);
+  const result = Review.findById(id).populate("courseId");
   return result;
 };
 
