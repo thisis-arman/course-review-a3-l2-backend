@@ -4,11 +4,9 @@ import { ErrorRequestHandler } from "express";
 import { ZodError } from "zod";
 import { handleZodError } from "../errors/handleZodError";
 import { handleCastError } from "../errors/handleCastError";
-import {
-  handleDuplicate,
-  handleDuplicateError,
-} from "../errors/handleDuplicateError";
+import { handleDuplicateError } from "../errors/handleDuplicateError";
 import AppError from "../errors/AppError";
+import { handleValidationError } from "../errors/handleValidationError";
 
 export type TErrorSources = {
   path: string | number;
@@ -30,6 +28,11 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
     const meaningFulError = handleZodError(err);
     console.log({ meaningFulError });
     statusCode = meaningFulError?.statusCode;
+    message = meaningFulError.message;
+    errorSources = meaningFulError.errorSources;
+  } else if (err?.name === "validationError") {
+    const meaningFulError = handleValidationError(err);
+    statusCode = meaningFulError.statusCode;
     message = meaningFulError.message;
     errorSources = meaningFulError.errorSources;
   } else if (err?.name === "CastError") {
