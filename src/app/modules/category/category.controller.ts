@@ -8,7 +8,7 @@ const createCategory: RequestHandler = catchAsync(async (req, res) => {
   const result = await CategoryServices.createCategoryIntoDB(req.body);
 
   sendResponse(res, {
-    statusCode: Number(httpStatus.ok),
+    statusCode: 200,
     success: true,
     message: "Category created successfully",
     data: result,
@@ -20,7 +20,7 @@ const getAllCategories: RequestHandler = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: Number(httpStatus.ok),
     success: true,
-    message: "Category  are retrieved successfully",
+    message: "Categories  are retrieved successfully",
     data: courses,
   });
 });

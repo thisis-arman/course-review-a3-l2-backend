@@ -3,7 +3,7 @@ import { Types } from "mongoose";
 type TCourse = {
   title: string;
   instructor: string;
-  categoryID: Types.ObjectId;
+  categoryId: Types.ObjectId;
   price: number;
   tags: [
     {

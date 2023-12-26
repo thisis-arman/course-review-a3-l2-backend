@@ -5,10 +5,11 @@ import sendResponse from "../../utils/sendResponse";
 import catchAsync from "../../utils/catchAsync";
 
 const createCourse: RequestHandler = catchAsync(async (req, res) => {
+  console.log(req.body);
   const result = await CourseServices.createCourseIntoDB(req.body);
 
   sendResponse(res, {
-    statusCode: Number(httpStatus.ok),
+    statusCode: 200,
     success: true,
     message: "Course created successfully",
     data: result,
@@ -18,7 +19,7 @@ const createCourse: RequestHandler = catchAsync(async (req, res) => {
 const getAllCourses: RequestHandler = catchAsync(async (req, res) => {
   const courses = await CourseServices.getAllCoursesFromDB();
   sendResponse(res, {
-    statusCode: Number(httpStatus.ok),
+    statusCode: 200,
     success: true,
     message: "Course  are retrieved successfully",
     data: courses,
@@ -29,7 +30,7 @@ const getSingleCourse = catchAsync(async (req, res) => {
   const { id } = req.params;
   const course = await CourseServices.getSingleCourseFromDB(id);
   sendResponse(res, {
-    statusCode: Number(httpStatus.ok),
+    statusCode: 200,
     success: true,
     message: "Course is retrieved successfully",
     data: course,

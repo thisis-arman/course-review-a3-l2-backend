@@ -1,24 +1,23 @@
-import TCourse from "./course.interface";
-import { Course } from "./course.model";
+import TReview from "./review.interface";
+import { Review } from "./review.model";
 
-const createCourseIntoDB = async (payload: TCourse) => {
-  console.log({ payload });
-  const result = await Course.create(payload);
+const createReviewIntoDB = (payload: TReview) => {
+  const result = Review.create(payload);
   return result;
 };
 
-const getAllCoursesFromDB = async () => {
-  const result = await Course.find().populate("categoryId");
+const getAllReviewsFromDB = () => {
+  const result = Review.find();
   return result;
 };
 
-const getSingleCourseFromDB = (id: string) => {
-  const result = Course.findById(id);
+const getSingleReviewFromDB = (id: string) => {
+  const result = Review.findById(id);
   return result;
 };
 
-const deleteCourseFromDB = (id: string) => {
-  const result = Course.findByIdAndUpdate(
+const deleteReviewFromDB = (id: string) => {
+  const result = Review.findByIdAndUpdate(
     id,
     {
       isDeleted: true,
@@ -185,9 +184,9 @@ const deleteStudentFromDB = async (id: string) => {
   }
 }; */
 
-export const CourseServices = {
-  createCourseIntoDB,
-  getSingleCourseFromDB,
-  getAllCoursesFromDB,
-  deleteCourseFromDB,
+export const ReviewServices = {
+  createReviewIntoDB,
+  getSingleReviewFromDB,
+  getAllReviewsFromDB,
+  deleteReviewFromDB,
 };

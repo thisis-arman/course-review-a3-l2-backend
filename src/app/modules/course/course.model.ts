@@ -38,6 +38,10 @@ const CourseSchema = new Schema<TCourse>({
     required: [true, "Instructor is required"],
     trim: true,
   },
+  categoryId: {
+    type: Schema.Types.ObjectId,
+    ref: "Category",
+  },
   price: {
     type: Number,
     required: [true, "Price is required"],
