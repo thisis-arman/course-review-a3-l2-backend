@@ -21,7 +21,7 @@ const createCourseValidation = z.object({
     endDate: z.string(),
     language: z.string(),
     provider: z.string(),
-    durationInWeeks: z.number(),
+    // durationInWeeks: z.number(),
     details: CourseDetails,
   }),
 });
@@ -37,16 +37,18 @@ const updateCourseDetails = z.object({
 });
 
 const updateCourseValidation = z.object({
-  title: z.string().optional(),
-  instructor: z.string().optional(),
-  price: z.number().optional(),
-  tags: z.array(updateCourseTag),
-  startDate: z.string().optional(),
-  endDate: z.string().optional(),
-  language: z.string().optional(),
-  provider: z.string().optional(),
-  durationInWeeks: z.number().optional(),
-  details: updateCourseDetails,
+  body: z.object({
+    title: z.string().optional(),
+    instructor: z.string().optional(),
+    price: z.number().optional(),
+    tags: z.array(updateCourseTag).optional(),
+    startDate: z.string().optional(),
+    endDate: z.string().optional(),
+    language: z.string().optional(),
+    provider: z.string().optional(),
+    // durationInWeeks: z.number().optional(),
+    details: updateCourseDetails.optional(),
+  }),
 });
 
 export const courseValidations = {

@@ -8,9 +8,40 @@ const createCourseIntoDB = async (payload: TCourse) => {
   return result;
 };
 
-const getAllCoursesFromDB = async () => {
-  const result = await Course.find().populate("categoryId");
-  return result;
+const getAllCoursesFromDB = async (query: Record<string, unknown>) => {
+  const queryObj = { ...query };
+
+  const excludeField = ["tags", "limit", "page", "sort", "language"];
+  excludeField.forEach((element) => delete queryObj[element]);
+
+  const filterQuery = Course.find(queryObj).populate("categoryId");
+
+  const filterByLanguage = Course.find([
+    { $match: { language: query.language } },
+  ]);
+
+  console.log({ filterByLanguage });
+
+  const findCourseByTags = await filterQuery.find({
+    tags: { $elemMatch: { name: query.tags } },
+  });
+
+  let limit = 1;
+  let skip = 0;
+  let page = 1;
+
+  if (query?.page) {
+    page = query.page as number;
+  }
+
+  if (query?.limit) {
+    limit = query.limit as number;
+    skip = (page - 1) * limit;
+  }
+
+  // const paginateQuery = await filterQuery.skip(skip);
+
+  return findCourseByTags;
 };
 
 const getSingleCourseFromDB = (id: string) => {
@@ -34,13 +65,47 @@ const deleteCourseFromDB = (id: string) => {
 const getSingleCourseReviewFromDB = async (id: string) => {
   const singleCourse = await Course.findById(id);
   const findReview = await Review.find({ courseId: id });
-  console.log({ findReview }, "findReview");
-  console.log({ singleCourse });
+
   return {
     course: singleCourse,
     reviews: [findReview],
   };
 };
+
+const updateCourseIntoDB = async (id: string, payload: Partial<TCourse>) => {
+  const { tags, details, ...remainingCourseInfo } = payload;
+  const modifiedCourse: Record<string, unknown> = {
+    ...remainingCourseInfo,
+  };
+
+  // const tags = tags?.map((tag) => tag.isDeleted);
+
+  if (tags && Object.keys(tags).length) {
+    for (const [key, value] of Object.entries(tags)) {
+      modifiedCourse[`tags.${key}`] = value;
+    }
+  }
+  if (details && Object.keys(details).length) {
+    for (const [key, value] of Object.entries(details)) {
+      modifiedCourse[`details.${key}`] = value;
+    }
+  }
+
+  console.log({ modifiedCourse });
+
+  const updatedCourse = await Course.findByIdAndUpdate(id, modifiedCourse, {
+    new: true,
+    runValidators: true,
+  });
+  console.log({ updatedCourse });
+  return updatedCourse;
+};
+
+/* const getBestCourses =async()=>{
+  
+  const Courses = await Course.find()
+  const bestCourses = Courses.
+}  */
 
 /* 
 const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
@@ -203,4 +268,5 @@ export const CourseServices = {
   getAllCoursesFromDB,
   getSingleCourseReviewFromDB,
   deleteCourseFromDB,
+  updateCourseIntoDB,
 };
