@@ -61,7 +61,6 @@ const getAllCoursesFromDB = async (query: CourseQuery) => {
     .sort({ [sortBy]: sortOrder === "desc" ? -1 : 1 })
     .skip((page - 1) * limit)
     .limit(limit);
-  console.log({ result });
 
   return {
     data: result,

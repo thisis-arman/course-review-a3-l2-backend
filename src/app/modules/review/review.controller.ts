@@ -16,12 +16,12 @@ const createReview: RequestHandler = catchAsync(async (req, res) => {
 });
 
 const getAllReviews: RequestHandler = catchAsync(async (req, res) => {
-  const courses = await ReviewServices.getAllReviewsFromDB();
+  const reviews = await ReviewServices.getAllReviewsFromDB();
   sendResponse(res, {
     statusCode: 200,
     success: true,
-    message: "Categories  are retrieved successfully",
-    data: courses,
+    message: "Reviews  are retrieved successfully",
+    data: reviews,
   });
 });
 

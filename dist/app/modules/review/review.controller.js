@@ -27,12 +27,12 @@ const createReview = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, v
     });
 }));
 const getAllReviews = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const courses = yield review_service_1.ReviewServices.getAllReviewsFromDB();
+    const reviews = yield review_service_1.ReviewServices.getAllReviewsFromDB();
     (0, sendResponse_1.default)(res, {
         statusCode: 200,
         success: true,
-        message: "Categories  are retrieved successfully",
-        data: courses,
+        message: "Reviews  are retrieved successfully",
+        data: reviews,
     });
 }));
 const getSingleReview = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {

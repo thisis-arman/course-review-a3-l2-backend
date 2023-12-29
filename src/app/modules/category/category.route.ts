@@ -12,7 +12,7 @@ router.post(
 );
 router.delete("/category/:id", CategoryController.deleteCategory);
 router.get("/categories", CategoryController.getAllCategories);
-router.get("/:id", CategoryController.getSingleCategory);
+router.get("/category/:id", CategoryController.getSingleCategory);
 // router.patch("/:studentId", CourseController.);
 
 export const CategoryRoutes = router;

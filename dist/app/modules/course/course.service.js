@@ -34,6 +34,7 @@ const createCourseIntoDB = (payload) => __awaiter(void 0, void 0, void 0, functi
     return result;
 });
 const getAllCoursesFromDB = (query) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log({ query });
     const { page = 1, limit = 10, sortBy = "startDate", sortOrder = "asc", minPrice, maxPrice, tags, startDate, endDate, language, provider, durationInWeeks, level, } = query;
     const filters = {};
     // Apply filters
@@ -58,14 +59,17 @@ const getAllCoursesFromDB = (query) => __awaiter(void 0, void 0, void 0, functio
         filters.durationInWeeks = durationInWeeks;
     if (level)
         filters["details.level"] = level;
+    console.log({ filters });
     // Get total count of documents that match the filters
     const totalCount = yield course_model_1.Course.countDocuments(filters);
+    console.log({ totalCount });
     // Retrieve paginated data
     const result = yield course_model_1.Course.find(filters)
         .populate("categoryId")
         .sort({ [sortBy]: sortOrder === "desc" ? -1 : 1 })
         .skip((page - 1) * limit)
         .limit(limit);
+    console.log({ result });
     return {
         data: result,
         meta: {

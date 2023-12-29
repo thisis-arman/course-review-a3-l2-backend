@@ -20,6 +20,13 @@ function main() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             yield mongoose_1.default.connect(config_1.default.database_url);
+            app_1.default.get("/", (req, res) => {
+                res.json({
+                    success: true,
+                    status: 200,
+                    message: "Welcome to Course Review App",
+                });
+            });
             app_1.default.listen(config_1.default.port, () => {
                 // response.json("hello world!");
                 console.log(`app is listening on port ${config_1.default.port}`);

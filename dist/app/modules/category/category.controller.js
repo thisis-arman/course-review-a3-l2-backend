@@ -13,7 +13,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CategoryController = void 0;
-const http_status_1 = __importDefault(require("http-status"));
 const sendResponse_1 = __importDefault(require("../../utils/sendResponse"));
 const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
 const category_service_1 = require("./category.service");
@@ -29,7 +28,7 @@ const createCategory = (0, catchAsync_1.default)((req, res) => __awaiter(void 0,
 const getAllCategories = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const courses = yield category_service_1.CategoryServices.getAllCategoriesFromDB();
     (0, sendResponse_1.default)(res, {
-        statusCode: Number(http_status_1.default.ok),
+        statusCode: 200,
         success: true,
         message: "Categories  are retrieved successfully",
         data: courses,
@@ -39,7 +38,7 @@ const getSingleCategory = (0, catchAsync_1.default)((req, res) => __awaiter(void
     const { id } = req.params;
     const course = yield category_service_1.CategoryServices.getSingleCategoryFromDB(id);
     (0, sendResponse_1.default)(res, {
-        statusCode: Number(http_status_1.default.ok),
+        statusCode: 200,
         success: true,
         message: "Category is retrieved successfully",
         data: course,
@@ -49,7 +48,7 @@ const deleteCategory = (0, catchAsync_1.default)((req, res) => __awaiter(void 0,
     const { id } = req.params;
     const deletedCategory = yield category_service_1.CategoryServices.deleteCategoryFromDB(id);
     (0, sendResponse_1.default)(res, {
-        statusCode: Number(http_status_1.default.ok),
+        statusCode: 200,
         success: true,
         message: "Category is deleted successfully",
         data: deletedCategory,

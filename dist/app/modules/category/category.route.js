@@ -12,6 +12,6 @@ const router = express_1.default.Router();
 router.post("/categories", (0, validateRequest_1.default)(category_validation_1.categoryValidations.createCategoryValidation), category_controller_1.CategoryController.createCategory);
 router.delete("/category/:id", category_controller_1.CategoryController.deleteCategory);
 router.get("/categories", category_controller_1.CategoryController.getAllCategories);
-router.get("/:id", category_controller_1.CategoryController.getSingleCategory);
+router.get("/category/:id", category_controller_1.CategoryController.getSingleCategory);
 // router.patch("/:studentId", CourseController.);
 exports.CategoryRoutes = router;
