@@ -11,7 +11,8 @@ router.post(
   CourseController.createCourse
 );
 router.get("/courses", CourseController.getAllCourses);
-router.delete("/:id", CourseController.deleteCourse);
+router.delete("/course/:id", CourseController.deleteCourse);
+router.get("/course/best", CourseController.getBestCourses);
 router.get("/course/:id", CourseController.getSingleCourse);
 router.get("/courses/:id/reviews", CourseController.getSingleCourseReview);
 router.patch(

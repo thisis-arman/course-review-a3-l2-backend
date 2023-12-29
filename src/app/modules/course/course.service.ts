@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import AppError from "../../errors/AppError";
+import { CourseQuery } from "../../interface/queryTypes";
 import { Review } from "../review/review.model";
 import TCourse from "./course.interface";
 import { Course } from "./course.model";
@@ -7,48 +10,74 @@ const createCourseIntoDB = async (payload: TCourse) => {
   const result = await Course.create(payload);
   return result;
 };
+const getAllCoursesFromDB = async (query: CourseQuery) => {
+  const {
+    page = 1,
+    limit = 10,
+    sortBy = "startDate",
+    sortOrder = "asc",
+    minPrice,
+    maxPrice,
+    tags,
+    startDate,
+    endDate,
+    language,
+    provider,
+    durationInWeeks,
+    level,
+  } = query;
 
-const getAllCoursesFromDB = async (query: Record<string, unknown>) => {
-  const queryObj = { ...query };
+  const filters: Record<string, any> = {};
 
-  const excludeField = ["tags", "limit", "page", "sort", "language"];
-  excludeField.forEach((element) => delete queryObj[element]);
-
-  const filterQuery = Course.find(queryObj).populate("categoryId");
-
-  const filterByLanguage = Course.find([
-    { $match: { language: query.language } },
-  ]);
-
-  console.log({ filterByLanguage });
-
-  const findCourseByTags = await filterQuery.find({
-    tags: { $elemMatch: { name: query.tags } },
-  });
-
-  let limit = 1;
-  let skip = 0;
-  let page = 1;
-
-  if (query?.page) {
-    page = query.page as number;
+  // Apply filters
+  if (minPrice !== undefined || maxPrice !== undefined) {
+    filters.price = {};
+    if (minPrice !== undefined) filters.price.$gte = minPrice;
+    if (maxPrice !== undefined) filters.price.$lte = maxPrice;
   }
 
-  if (query?.limit) {
-    limit = query.limit as number;
-    skip = (page - 1) * limit;
-  }
+  if (tags) filters["tags.name"] = tags;
 
-  // const paginateQuery = await filterQuery.skip(skip);
+  if (startDate) filters.startDate = { $gte: startDate };
+  if (endDate) filters.endDate = { $lte: endDate };
 
-  return findCourseByTags;
+  if (language) filters.language = language;
+  if (provider) filters.provider = provider;
+
+  if (durationInWeeks !== undefined) filters.durationInWeeks = durationInWeeks;
+
+  if (level) filters["details.level"] = level;
+
+  // Get total count of documents that match the filters
+  const totalCount = await Course.countDocuments(filters);
+
+  // Retrieve paginated data
+  const result = await Course.find(filters)
+    .populate({
+      path: "createdBy",
+      select: "_id username email role",
+    })
+    .sort({ [sortBy]: sortOrder === "desc" ? -1 : 1 })
+    .skip((page - 1) * limit)
+    .limit(limit);
+
+  return {
+    data: result,
+    meta: {
+      page,
+      limit,
+      total: totalCount,
+    },
+  };
 };
 
+// Get a single Course from database
 const getSingleCourseFromDB = (id: string) => {
   const result = Course.findById(id);
   return result;
 };
 
+// it will make isDeleted field true
 const deleteCourseFromDB = (id: string) => {
   const result = Course.findByIdAndUpdate(
     id,
@@ -71,6 +100,35 @@ const getSingleCourseReviewFromDB = async (id: string) => {
     reviews: [findReview],
   };
 };
+
+/* const updateCourseIntoDB = async (id: string, payload: Partial<TCourse>) => {
+  const { tags, details, ...remainingCourseInfo } = payload;
+  const modifiedCourse: Record<string, unknown> = {
+    ...remainingCourseInfo,
+  };
+
+  // const tags = tags?.map((tag) => tag.isDeleted);
+
+  if (tags && Object.keys(tags).length) {
+    for (const [key, value] of Object.entries(tags)) {
+      modifiedCourse[`tags.${key}`] = value;
+    }
+  }
+  if (details && Object.keys(details).length) {
+    for (const [key, value] of Object.entries(details)) {
+      modifiedCourse[`details.${key}`] = value;
+    }
+  }
+
+  console.log({ modifiedCourse });
+
+  const updatedCourse = await Course.findByIdAndUpdate(id, modifiedCourse, {
+    new: true,
+    runValidators: true,
+  });
+  console.log({ updatedCourse });
+  return updatedCourse;
+}; */
 
 const updateCourseIntoDB = async (id: string, payload: Partial<TCourse>) => {
   const { tags, details, ...remainingCourseInfo } = payload;
@@ -101,166 +159,61 @@ const updateCourseIntoDB = async (id: string, payload: Partial<TCourse>) => {
   return updatedCourse;
 };
 
-/* const getBestCourses =async()=>{
-  
-  const Courses = await Course.find()
-  const bestCourses = Courses.
-}  */
-
-/* 
-const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
-  const queryObj = { ...query };
-  let searchTerm = "";
-  const studentSearchableFields = ["email", "name.firstName", "presentAddress"];
-  // Searching for all students in the database
-  if (query?.searchTerm) {
-    searchTerm = query?.searchTerm as string;
-  }
-
-  const searchQuery = Student.find({
-    $or: studentSearchableFields.map((field) => ({
-      [field]: { $regex: searchTerm, $options: "i" },
-    })),
-  });
-
-  const excludeField = ["searchTerm", "sort", "page", "limit", "fields"];
-  excludeField.forEach((element) => delete queryObj[element]);
-
-  console.log({ query }, { queryObj });
-
-  const filterQuery = searchQuery
-    .find(queryObj)
-    .populate("admissionSemester")
-    .populate({
-      path: "academicDepartment",
-      populate: {
-        path: "academicFaculty",
-      },
-    });
-  /* 
-  const result = await Student.find()
-    .populate('admissionSemester')
-    .populate({
-      path: 'academicDepartment',
-      populate: {
-        path: 'academicFaculty',
-      },
-    }); 
-
-  let sort = "-createdAt";
-
-  if (query.sort) {
-    sort = query.sort as string;
-  }
-
-  const sortQuery = filterQuery.sort(sort);
-
-  let limit = 1;
-  let skip = 0;
-  let page = 0;
-
-  if (query?.limit) {
-    limit = query.limit as number;
-  }
-
-  if (query?.page) {
-    page = Number(query.page);
-    skip = (page - 1) * limit;
-  }
-
-  const paginateQuery = sortQuery.skip(skip);
-  const limitQuery = paginateQuery.limit(limit);
-
-  let fields = "-__v";
-
-  if (query.fields) {
-    fields = (query.fields as string).split(",").join(" ");
-    console.log({ fields });
-  }
-
-  const fieldQuery = await limitQuery.select(fields);
-
-  return fieldQuery;
-};
-
-const getSingleStudentFromDB = async (id: string) => {
-  const result = await Student.findOne({ id })
-    .populate("admissionSemester")
-    .populate({
-      path: "academicDepartment",
-      populate: {
-        path: "academicFaculty",
-      },
-    });
-  return result;
-};
-
-const updateStudentIntoDB = async (id: string, payload: Partial<TStudent>) => {
-  console.log({ payload });
-
-  const { name, guardian, localGuardian, ...remainingStudentData } = payload;
-  const modifiedStudent: Record<string, unknown> = {
-    ...remainingStudentData,
-  };
-
-  if (name && Object.keys(name).length) {
-    for (const [key, value] of Object.entries(name)) {
-      modifiedStudent[`name.${key}`] = value;
-    }
-  }
-
-  if (guardian && Object.keys(guardian).length) {
-    for (const [key, value] of Object.entries(guardian)) {
-      modifiedStudent[`guardian.${key}`] = value;
-    }
-  }
-
-  if (localGuardian && Object.keys(localGuardian).length) {
-    for (const [key, value] of Object.entries(localGuardian)) {
-      modifiedStudent[`localGuardian.${key}`] = value;
-    }
-  }
-  console.log({ modifiedStudent });
-
-  const result = await Student.findOneAndUpdate({ id }, modifiedStudent, {
-    new: true,
-    runValidators: true,
-  });
-  return result;
-};
-
-const deleteStudentFromDB = async (id: string) => {
-  const session = await mongoose.startSession();
+const getBestCoursesFromDB = async () => {
+  console.log("Getting best courses");
   try {
-    session.startTransaction();
+    const bestCourse = await Course.aggregate([
+      {
+        $lookup: {
+          from: "reviews",
+          localField: "_id",
+          foreignField: "courseId",
+          as: "reviews",
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          title: 1,
+          instructor: 1,
+          categoryId: 1,
+          price: 1,
+          tags: 1,
+          startDate: 1,
+          endDate: 1,
+          language: 1,
+          provider: 1,
+          durationInWeeks: 1,
+          details: 1,
+          averageRating: { $avg: "$reviews.rating" },
+          reviewCount: { $size: "$reviews" },
+        },
+      },
+      { $sort: { averageRating: -1 } },
+      { $limit: 1 },
+    ]);
 
-    const deletedStudent = await Student.findOneAndUpdate(
-      { id },
-      { isDeleted: true },
-      { new: true, session }
-    );
-    if (!deletedStudent) {
-      throw new AppError(httpStatus.BAD_REQUEST, "Failed to delete student");
+    console.log({ bestCourse });
+    if (!bestCourse || bestCourse.length === 0) {
+      return {
+        success: false,
+        statusCode: 404,
+        message: "No courses found",
+      };
     }
 
-    const deletedUser = await User.findOneAndUpdate(
-      { id },
-      { isDeleted: true },
-      { new: true, session }
-    );
-    if (!deletedUser) {
-      throw new AppError(httpStatus.BAD_REQUEST, "Failed to delete user");
-    }
-
-    await session.commitTransaction();
-    await session.endSession();
-    return deletedStudent;
+    return {
+      success: true,
+      statusCode: 200,
+      message: "Best course retrieved successfully",
+      data: {
+        course: bestCourse[0],
+      },
+    };
   } catch (error) {
-    console.log(error);
-    await session.abortTransaction();
-    await session.endSession();
+    throw new AppError(500, "Internal Server Error");
   }
-}; */
+};
 
 export const CourseServices = {
   createCourseIntoDB,
@@ -269,4 +222,5 @@ export const CourseServices = {
   getSingleCourseReviewFromDB,
   deleteCourseFromDB,
   updateCourseIntoDB,
+  getBestCoursesFromDB,
 };

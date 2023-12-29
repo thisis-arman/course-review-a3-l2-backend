@@ -12,6 +12,7 @@ export const TCourseTags = [
       type: Boolean,
       default: false,
     },
+    _id: false,
   },
 ];
 
@@ -88,8 +89,6 @@ CourseSchema.virtual("durationInWeeks").get(function () {
   const durationInWeeks = Math.ceil(
     durationInMilliseconds / (7 * 24 * 60 * 60 * 1000)
   );
-
-  console.log(durationInWeeks);
 
   return durationInWeeks;
 });
