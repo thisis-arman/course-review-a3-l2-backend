@@ -10,7 +10,7 @@ router.post(
   validateRequest(categoryValidations.createCategoryValidation),
   CategoryController.createCategory
 );
-router.delete("/:id", CategoryController.deleteCategory);
+router.delete("/category/:id", CategoryController.deleteCategory);
 router.get("/categories", CategoryController.getAllCategories);
 router.get("/:id", CategoryController.getSingleCategory);
 // router.patch("/:studentId", CourseController.);

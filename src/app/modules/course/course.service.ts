@@ -11,6 +11,7 @@ const createCourseIntoDB = async (payload: TCourse) => {
   return result;
 };
 const getAllCoursesFromDB = async (query: CourseQuery) => {
+  console.log({ query });
   const {
     page = 1,
     limit = 10,
@@ -48,18 +49,19 @@ const getAllCoursesFromDB = async (query: CourseQuery) => {
 
   if (level) filters["details.level"] = level;
 
+  console.log({ filters });
+
   // Get total count of documents that match the filters
   const totalCount = await Course.countDocuments(filters);
+  console.log({ totalCount });
 
   // Retrieve paginated data
   const result = await Course.find(filters)
-    .populate({
-      path: "createdBy",
-      select: "_id username email role",
-    })
+    .populate("categoryId")
     .sort({ [sortBy]: sortOrder === "desc" ? -1 : 1 })
     .skip((page - 1) * limit)
     .limit(limit);
+  console.log({ result });
 
   return {
     data: result,

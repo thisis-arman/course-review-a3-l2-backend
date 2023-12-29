@@ -1,35 +1,28 @@
-import TReview from "./review.interface";
-import { Review } from "./review.model";
-
-const createReviewIntoDB = async (payload: TReview) => {
-  const result = await Review.create(payload);
-  return result;
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ReviewServices = void 0;
+const review_model_1 = require("./review.model");
+const createReviewIntoDB = (payload) => {
+    const result = review_model_1.Review.create(payload);
+    return result;
 };
-
-const getAllReviewsFromDB = async () => {
-  const result = await Review.find().populate("courseId");
-  return result;
+const getAllReviewsFromDB = () => {
+    const result = review_model_1.Review.find();
+    return result;
 };
-
-const getSingleReviewFromDB = async (id: string) => {
-  const result = await Review.findById(id).populate("courseId");
-  return result;
+const getSingleReviewFromDB = (id) => {
+    const result = review_model_1.Review.findById(id).populate("courseId");
+    return result;
 };
-
-const deleteReviewFromDB = async (id: string) => {
-  const result = await Review.findByIdAndUpdate(
-    id,
-    {
-      isDeleted: true,
-    },
-    {
-      new: true,
-    }
-  );
-  return result;
+const deleteReviewFromDB = (id) => {
+    const result = review_model_1.Review.findByIdAndUpdate(id, {
+        isDeleted: true,
+    }, {
+        new: true,
+    });
+    return result;
 };
-
-/* 
+/*
 const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
   const queryObj = { ...query };
   let searchTerm = "";
@@ -59,7 +52,7 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
         path: "academicFaculty",
       },
     });
-  /* 
+  /*
   const result = await Student.find()
     .populate('admissionSemester')
     .populate({
@@ -67,7 +60,7 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
       populate: {
         path: 'academicFaculty',
       },
-    }); 
+    });
 
   let sort = "-createdAt";
 
@@ -183,10 +176,9 @@ const deleteStudentFromDB = async (id: string) => {
     await session.endSession();
   }
 }; */
-
-export const ReviewServices = {
-  createReviewIntoDB,
-  getSingleReviewFromDB,
-  getAllReviewsFromDB,
-  deleteReviewFromDB,
+exports.ReviewServices = {
+    createReviewIntoDB,
+    getSingleReviewFromDB,
+    getAllReviewsFromDB,
+    deleteReviewFromDB,
 };

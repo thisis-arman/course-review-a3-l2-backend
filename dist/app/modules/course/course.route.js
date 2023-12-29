@@ -1,0 +1,20 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.CourseRoutes = void 0;
+const express_1 = __importDefault(require("express"));
+const course_controller_1 = require("./course.controller");
+const validateRequest_1 = __importDefault(require("../../middleware/validateRequest"));
+const course_validation_1 = require("./course.validation");
+const router = express_1.default.Router();
+router.post("/course", (0, validateRequest_1.default)(course_validation_1.courseValidations.createCourseValidation), course_controller_1.CourseController.createCourse);
+router.get("/courses", course_controller_1.CourseController.getAllCourses);
+router.delete("/course/:id", course_controller_1.CourseController.deleteCourse);
+router.get("/course/best", course_controller_1.CourseController.getBestCourses);
+router.get("/course/:id", course_controller_1.CourseController.getSingleCourse);
+router.get("/courses/:id/reviews", course_controller_1.CourseController.getSingleCourseReview);
+router.patch("/courses/:id", (0, validateRequest_1.default)(course_validation_1.courseValidations.updateCourseValidation), course_controller_1.CourseController.updateCourse);
+// router.get("/api/course/best");
+exports.CourseRoutes = router;

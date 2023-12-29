@@ -6,14 +6,15 @@ import { ReviewController } from "./review.controller";
 
 const router = express.Router();
 
+router.get("/reviews", ReviewController.getAllReviews);
 router.post(
   "/reviews",
   validateRequest(reviewValidations.createReviewValidationSchema),
   ReviewController.createReview
 );
-router.get("/reviews", ReviewController.getAllReviews);
-router.delete("/reviews/:id", ReviewController.deleteReview);
 router.get("/reviews/:id", ReviewController.getSingleReview);
+router.delete("/reviews/:id", ReviewController.deleteReview);
+// router.patch("/:studentId", ReviewController.);
 // router.patch("/:studentId", ReviewController.);
 
 export const ReviewRoutes = router;

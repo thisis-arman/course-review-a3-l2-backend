@@ -8,6 +8,13 @@ let server: Server;
 async function main() {
   try {
     await mongoose.connect(config.database_url as string);
+    app.get("/", (req, res) => {
+      res.json({
+        success: true,
+        status: 200,
+        message: "Welcome to Course Review App",
+      });
+    });
 
     app.listen(config.port, () => {
       // response.json("hello world!");
